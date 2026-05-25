@@ -1,34 +1,22 @@
-1 name: BuildAPK
-    2 on:
-    3   push:
-    4     branches:
-    5       - main
-    6       - master
-    7   workflow_dispatch:
-    8 jobs:
-    9   build:
-   10     runs-on: ubuntu-latest
-   11     steps:
-   12       - uses: actions/checkout@v3
-   13       - name: Set up Java
-   14         uses: actions/setup-java@v3
-   15         with:
-   16           distribution: 'zulu'
-   17           java-version: '17'
-   18       - name: Set up Flutter
-   19         uses: subosito/flutter-action@v2
+on:
+    2   push:
+    3     branches:
+    4       - main
+    5   workflow_dispatch:
+    6
+    7 jobs:
+    8   build:
+    9     runs-on: ubuntu-latest
+   10     steps:
+   11       - uses: actions/checkout@v3
+   12       - uses: subosito/flutter-action@v2
+   13         with:
+   14           channel: 'stable'
+   15       - run: |
+   16           cd flutter_app
+   17           flutter pub get
+   18           flutter build apk --release
+   19       - uses: actions/upload-artifact@v3
    20         with:
-   21           channel: 'stable'
-   22       - name: Install dependencies
-   23         run: |
-   24           cd flutter_app
-   25           flutter pub get
-   26       - name: Build APK
-   27         run: |
-   28           cd flutter_app
-   29           flutter build apk --release
-   30       - name: Upload APK
-   31         uses: actions/upload-artifact@v3
-   32         with:
-   33           name: release-apk
-   34           path: flutter_app/build/app/outputs/flutter-apk/app-release.apk
+   21           name: release-apk
+   22           path: flutter_app/build/app/outputs/flutter-apk/app-release.apk
